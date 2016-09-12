@@ -12,10 +12,17 @@ class GameScene: SKScene {
     
     let background = SKSpriteNode(imageNamed: "background-football")
     let ball = SKSpriteNode(imageNamed: "ball1")
+    let ball2 = SKSpriteNode(imageNamed: "ball1")
     let goal = SKSpriteNode(imageNamed: "goal-football")
     let arrow = SKSpriteNode(imageNamed: "arrow")
-    let weaponPower: CGFloat = 1500
+    let powerBar = SKSpriteNode(imageNamed: "power_bar")
+    let powerPin = SKSpriteNode(imageNamed: "power_pin")
+    let replay = SKSpriteNode(imageNamed: "replay")
+    
+    var weaponPower: CGFloat = 1500
     let π = CGFloat(M_PI)
+    var isTouching: Bool? = nil
+    
 
     
     override func didMoveToView(view: SKView) {
@@ -23,7 +30,7 @@ class GameScene: SKScene {
         //Adding the background to the view and setting it to be all the way to the back
         background.position = CGPoint(x: size.width/2, y: size.height/2)
         background.size = self.frame.size
-        background.zPosition = -1
+        background.zPosition = -2
         addChild(background)
         
         //This checks the background size and prints it in console
@@ -35,6 +42,11 @@ class GameScene: SKScene {
         ball.size = CGSize(width: 100, height: 100)
         ball.zPosition = 2
         addChild(ball)
+        
+        ball2.position = CGPoint(x: size.width - 250, y: size.height - size.height + 450)
+        ball2.size = CGSize(width: 100, height: 100)
+        ball2.zPosition = 2
+        addChild(ball2)
         
         //Setting the position of the goal and adding it to the view
         goal.position = CGPoint(x: size.width - 150, y: size.height - size.height + 200)
@@ -59,6 +71,7 @@ class GameScene: SKScene {
     }
     
     
+    
     //This function controls which angle you are gonna launch the football at
     func touchStart(touchPoint: CGPoint) {
         let delta = arrow.position - touchPoint
@@ -76,11 +89,19 @@ class GameScene: SKScene {
         
         arrow.zRotation = angle
         
-        let arrowsAdded = 0
         
         addChild(arrow)
         
     }
+    
+   /* func changeLevel(level: Int) {
+        if currentLevel+level < loadLevels()!.count {
+            let newScene = GameScene(level: <#T##Int#>)
+            newScene.scaleMode = scaleMode
+            
+            view!.presentScene(newScene)
+        }
+    }*/
     
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -88,6 +109,13 @@ class GameScene: SKScene {
         
         for touch in touches {
             let positionOfTouch = touch.locationInNode(self)
+            let touchedNode = self.nodeAtPoint(positionOfTouch)
+            
+            if let name = touchedNode.name{
+                if name == "restart"{
+                    print("touched")
+                }
+            }
             
             /*ball.position = positionOfTouch
             ball.physicsBody = SKPhysicsBody(circleOfRadius: 25)
@@ -97,16 +125,53 @@ class GameScene: SKScene {
             self.addChild(ball)*/
             
             touchStart(positionOfTouch)
- 
+            isTouching = true
+            
+            //Setting the powerbar
+            powerBar.position = CGPoint(x: size.width - size.width/2, y: size.height - size.height/3)
+            powerBar.size = CGSize(width: 700, height: 100)
+            powerBar.zPosition = -1
+            addChild(powerBar)
+            
+            //Setting the powerpin
+            powerPin.position = CGPoint(x: size.width - size.width/2 - 350, y: size.height - size.height/3)
+            powerPin.size = CGSize(width: 50, height: 150)
+            powerPin.zPosition = 0
+            addChild(powerPin)
+            
+            if replay == touchedNode{
+                restartGame()
+            }
+            
         }
         
+    }
+    
+    func restartGame(){
+        let newScene = GameScene()
+        newScene.scaleMode = scaleMode
+        
+        view!.presentScene(newScene)
     }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch = touches.first! as UITouch
         let touchLocation = touch.locationInNode(self)
-            touchMoved(touchLocation)
         
+        if let touch = touches.first {
+            let maximumPossibleForce = touch.maximumPossibleForce
+            let force = touch.force
+            let normalizedForce = force/maximumPossibleForce
+            
+            
+            
+            powerPin.position.x = (size.width - size.width/2 - 350) + normalizedForce * (self.size.width/2 - 350)
+            weaponPower = force * 700
+            print(weaponPower)
+        }
+        
+            touchMoved(touchLocation)
+
     }
     
     func touchMoved(touchPoint: CGPoint) {
@@ -121,18 +186,38 @@ class GameScene: SKScene {
             let rotateAction = SKAction.rotateToAngle(angle, duration: 0)
             arrow.runAction(rotateAction)
         }
+        
+       /* if isTouching == true {
+            var timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("powerControl"), userInfo: nil, repeats: true)
+            print(weaponPower)
+        }*/
+    
     }
+    
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch = touches.first! as UITouch
         let touchLocation = touch.locationInNode(self)
+        
+        //This function controlls so you can only touch the screen once
+        self.userInteractionEnabled = false
+        replay.position = CGPoint(x: size.width - size.width/2, y: size.height - size.height/2)
+        replay.size = CGSize(width: 200, height: 200)
+        addChild(replay)
+        
+        
+        
+        
         touchStopped(touchLocation)
+        isTouching = false
     }
     
     func touchStopped(touchPoint: CGPoint){
         let angle = arrow.zRotation
         let startingVelocity = CGVectorMake((π/2-angle)*weaponPower, angle*weaponPower)
         arrow.removeFromParent()
+        powerBar.removeFromParent()
+        powerPin.removeFromParent()
         
         ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width/2)
          ball.physicsBody?.affectedByGravity = true
@@ -140,5 +225,9 @@ class GameScene: SKScene {
          ball.physicsBody?.linearDamping = 0.8
          ball.physicsBody?.angularDamping = 0.9
          ball.physicsBody?.velocity = startingVelocity
+    }
+    
+    func powerControl () {
+        weaponPower = weaponPower + 50
     }
 }
