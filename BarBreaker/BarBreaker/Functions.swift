@@ -30,6 +30,10 @@ func <= (left: CGVector, right: CGVector) -> Bool {
     return (left.dx <= right.dx) && (left.dy <= right.dy)
 }
 
+func loadLevels() -> [Level]? {
+    return NSKeyedUnarchiver.unarchiveObjectWithFile(Level.ArchiveURL.path!) as? [Level]
+}
+
 extension CGPoint {
     var angle: CGFloat {
         return atan2(y,x)
