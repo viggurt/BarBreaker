@@ -34,6 +34,16 @@ func loadLevels() -> [Level]? {
     return NSKeyedUnarchiver.unarchiveObjectWithFile(Level.ArchiveURL.path!) as? [Level]
 }
 
+enum GameState {
+    case StartingLevel
+    case Started
+    case InAir
+    case GameOver
+    case GameWon
+    case GameLost
+}
+
+
 extension CGPoint {
     var angle: CGFloat {
         return atan2(y,x)

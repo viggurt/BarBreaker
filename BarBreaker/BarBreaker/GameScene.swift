@@ -8,30 +8,31 @@
 
 import SpriteKit
 
-struct game {
-    static var IsOver : Bool = false
-}
-
-struct physicsCategory{
-    static let Ball1: UInt32 = 0
-    static let Ball2: UInt32 = 0b1
-}
-
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
+    struct PhysicsCategory{
+        static let Ball1: UInt32    = 0
+        static let Ball2: UInt32    = 0b1
+    }
+    
+    
     let background = SKSpriteNode(imageNamed: "background-football")
-    let ball = SKSpriteNode(imageNamed: "ball1")
-    let ball2 = SKSpriteNode(imageNamed: "ball1")
+    //var ball = SKSpriteNode(imageNamed: "ball1")
+    //var ball2 = SKSpriteNode(imageNamed: "ball1")
     let goal = SKSpriteNode(imageNamed: "goal-football")
     let arrow = SKSpriteNode(imageNamed: "arrow")
     let powerBar = SKSpriteNode(imageNamed: "power_bar")
     let powerPin = SKSpriteNode(imageNamed: "power_pin")
     let replay = SKSpriteNode(imageNamed: "replay")
     var points: Int = 0
+    var ballGone: Bool!
+    var gameState: GameState?
     
     var weaponPower: CGFloat = 1500
     let π = CGFloat(M_PI)
-
+    
+    var ball = BallOne()
+    let ball2 = BallTwo()
     
     override func didMoveToView(view: SKView) {
         
@@ -46,34 +47,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         print("Size: \(mySize)")
         
         //Setting the position of the football and adding it to the view
-        ball.position = CGPoint(x: 100 , y: 400)
-        ball.size = CGSize(width: 100, height: 100)
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: 25)
+    
+        ball.position = CGPoint(x: 100 , y: 0)
         ball.zPosition = 2
-        
-        ball.physicsBody?.categoryBitMask = physicsCategory.Ball1
-        ball.physicsBody?.collisionBitMask = physicsCategory.Ball2
-        ball.physicsBody?.contactTestBitMask = physicsCategory.Ball2
-        ball.name = "Ball1"
-        ball.physicsBody?.affectedByGravity = true
-        ball.physicsBody?.dynamic = true
-        
+    
         addChild(ball)
         
+        ball.physicsBody?.velocity.dx = 0.4
+        ball.physicsBody?.velocity.dy = 0.4
+        
         //Ball2
-        //ball2.position = CGPoint(x: size.width - 250, y: size.height - size.height + 450)
-        ball2.position = CGPoint(x: 300 , y: 100)
-
-        ball2.size = CGSize(width: 100, height: 100)
-        ball2.physicsBody = SKPhysicsBody(circleOfRadius: 25)
+        
+        ball2.position = CGPoint(x: size.width - 250, y: size.height - size.height + 450)
         ball2.zPosition = 2
         
-        ball2.physicsBody?.categoryBitMask = physicsCategory.Ball2
+        /*ball2.physicsBody?.categoryBitMask = physicsCategory.Ball2
         ball2.physicsBody?.collisionBitMask = physicsCategory.Ball1
         ball2.physicsBody?.contactTestBitMask = physicsCategory.Ball1
         ball2.name = "Ball2"
-        ball2.physicsBody?.affectedByGravity = false
-        ball2.physicsBody?.dynamic = true
+        ball2.physicsBody?.affectedByGravity = true
+        ball2.physicsBody?.dynamic = false*/
         
         addChild(ball2)
         
@@ -84,6 +77,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         goal.physicsBody?.affectedByGravity = false
         goal.physicsBody?.dynamic = false
         addChild(goal)
+        
+        physicsWorld.contactDelegate = self
         
         //This is the gravity in the game
         self.physicsWorld.gravity = CGVector(dx: 0, dy: -9.8)
@@ -98,36 +93,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         arrow.zPosition = 1
         arrow.position = ball.position
         
+        //Replay-button
         replay.position = CGPoint(x: size.width - size.width/size.width - 60, y: size.height - size.height/size.width - 60)
         replay.size = CGSize(width: 100, height: 100)
         replay.name = "restart"
         addChild(replay)
         
+        //Tells if the ball we hit is gone
+        ballGone = false
+        
+        if ballGone == false{
+            
+        }
+        
     }
     
     func didBeginContact(contact: SKPhysicsContact) {
-        let firstBody = contact.bodyA as! SKSpriteNode
-        let secondBody = contact.bodyB as! SKSpriteNode
+       let collision = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
         
-        if ((firstBody.name == "Ball1") && (secondBody.name == "Ball2")){
-            collisionBalls(firstBody, Ball2: secondBody)
+        if collision == PhysicsCategory.Ball1 | PhysicsCategory.Ball2{
+            ball2.physicsBody?.dynamic = true
             points += 1
+            print("contact")
+            print(points)
+            ball2.removeFromParent()
+            ballGone = true
         }
-        else if ((firstBody.name == "Ball2") && (secondBody.name == "Ball1")){
-            collisionBalls(secondBody, Ball2: firstBody)
-            points += 1
-        }
+        
         
     }
     
-    func collisionBalls(Ball1: SKSpriteNode, Ball2: SKSpriteNode){
-        points + 1
-        print("contact")
-        
-        ball2.physicsBody?.affectedByGravity = true
-
+    func restart(){
+        self.removeAllChildren()
+        self.removeAllActions()
+        let gameScene:GameScene = GameScene(size: background.size)
+        let transition = SKTransition.fadeWithDuration(1.0)
+        self.view!.presentScene(gameScene, transition: transition)
     }
-    
     
     //This function controls which angle you are gonna launch the football at
     func touchStart(touchPoint: CGPoint) {
@@ -168,13 +170,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let positionOfTouch = touch.locationInNode(self)
             let touchedNode = self.nodeAtPoint(positionOfTouch)
             
-            if let name = touchedNode.name{
-                if name == "restart"{
-                    print("touched")
-                }
-            }
-        
-            
             /*ball.position = positionOfTouch
             ball.physicsBody = SKPhysicsBody(circleOfRadius: 25)
             ball.physicsBody?.affectedByGravity = true
@@ -182,8 +177,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ball.physicsBody?.linearDamping = 0
             self.addChild(ball)*/
             
-            touchStart(positionOfTouch)
-            
+
             //Setting the powerbar
             powerBar.position = CGPoint(x: size.width - size.width/2, y: size.height - size.height/3)
             powerBar.size = CGSize(width: 700, height: 100)
@@ -196,20 +190,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             powerPin.zPosition = 0
             addChild(powerPin)
             
+                touchStart(positionOfTouch)
+            
+            
             if replay == touchedNode{
-                restartGame()
+                restart()
             }
             
         }
         
     }
     
-    func restartGame(){
-        let gameScene:GameScene = GameScene(size: self.view!.bounds.size) // create your new scene
-        let transition = SKTransition.fadeWithDuration(1.0) // create type of transition (you can check in documentation for more transtions)
-        gameScene.scaleMode = SKSceneScaleMode.AspectFit
-        self.view!.presentScene(gameScene, transition: transition)
-    }
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         let touch = touches.first! as UITouch
@@ -226,9 +217,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             weaponPower = force * 1000
             print(weaponPower)
         }
-        
-            touchMoved(touchLocation)
 
+            touchMoved(touchLocation)
     }
     
     func touchMoved(touchPoint: CGPoint) {
@@ -242,12 +232,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(angle <= π/2) {
             let rotateAction = SKAction.rotateToAngle(angle, duration: 0)
             arrow.runAction(rotateAction)
+            
         }
         
        /* if isTouching == true {
             var timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("powerControl"), userInfo: nil, repeats: true)
             print(weaponPower)
         }*/
+        
     
     }
     
@@ -257,26 +249,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let touchLocation = touch.locationInNode(self)
         
         //This function controlls so you can only touch the screen oncx
+        self.userInteractionEnabled = false
+        
+        if ball.physicsBody!.velocity.dx == 0.0 && ball.physicsBody!.velocity.dy == 0.0 {
+            restart()
+        }
         
         touchStopped(touchLocation)
     }
     
     func touchStopped(touchPoint: CGPoint){
+        
         let angle = arrow.zRotation
         let startingVelocity = CGVectorMake((π/2-angle)*weaponPower, angle*weaponPower)
         arrow.removeFromParent()
         powerBar.removeFromParent()
         powerPin.removeFromParent()
         
-        ball.physicsBody = SKPhysicsBody(circleOfRadius: ball.size.width/2)
-         ball.physicsBody?.affectedByGravity = true
-         ball.physicsBody?.restitution = 0.6
-         ball.physicsBody?.linearDamping = 0.8
-         ball.physicsBody?.angularDamping = 0.9
-         ball.physicsBody?.velocity = startingVelocity
-    }
-    
-    func powerControl () {
-        weaponPower = weaponPower + 50
+        ball.physicsBody?.velocity = startingVelocity
+        
     }
 }

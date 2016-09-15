@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BarBreaker/GameScene.swift"
-            timestampString = "495447943.666464"
+            timestampString = "495627511.216826"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "33"
@@ -26,13 +26,107 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BarBreaker/GameScene.swift"
-            timestampString = "495459376.000187"
+            timestampString = "495632758.173499"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "230"
-            endingLineNumber = "230"
-            landmarkName = "touchesMoved(_:withEvent:)"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
+            landmarkName = "touchMoved(_:)"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BarBreaker/BallOne.swift"
+            timestampString = "495543550.266338"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "init()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BarBreaker/GameScene.swift"
+            timestampString = "495627511.216826"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
+            landmarkName = "GameScene"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BarBreaker.GameScene.ball.getter : BarBreaker.BallOne"
+                  moduleName = "BarBreaker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/namnlos/Documents/iOSProjekt/iOS/BarBreaker/BarBreaker/GameScene.swift"
+                  timestampString = "495543551.365127"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "35">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BarBreaker.GameScene.init (size : __C.CGSize) -&gt; BarBreaker.GameScene"
+                  moduleName = "BarBreaker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/namnlos/Documents/iOSProjekt/iOS/BarBreaker/BarBreaker/GameScene.swift"
+                  timestampString = "495543551.365468"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "452">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BarBreaker.GameScene.init () -&gt; BarBreaker.GameScene"
+                  moduleName = "BarBreaker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/namnlos/Documents/iOSProjekt/iOS/BarBreaker/BarBreaker/GameScene.swift"
+                  timestampString = "495543551.365632"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "432">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "BarBreaker.GameScene.init (coder : __ObjC.NSCoder) -&gt; Swift.Optional&lt;BarBreaker.GameScene&gt;"
+                  moduleName = "BarBreaker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/namnlos/Documents/iOSProjekt/iOS/BarBreaker/BarBreaker/GameScene.swift"
+                  timestampString = "495543551.365794"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "440">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
