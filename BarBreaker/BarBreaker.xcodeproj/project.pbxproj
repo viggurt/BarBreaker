@@ -22,6 +22,7 @@
 		93429E4C1D70505F00C77C05 /* goal-football.png in Resources */ = {isa = PBXBuildFile; fileRef = 93429E4A1D70505F00C77C05 /* goal-football.png */; };
 		93429E4E1D705CE900C77C05 /* arrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 93429E4D1D705CE900C77C05 /* arrow.png */; };
 		93429E501D74618200C77C05 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93429E4F1D74618200C77C05 /* Functions.swift */; };
+		934EEB471D8B391000059DE0 /* Points.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934EEB461D8B391000059DE0 /* Points.swift */; };
 		93B8318B1D86941700551BF7 /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B8318A1D86941700551BF7 /* Level.swift */; };
 		93B8318D1D881FCD00551BF7 /* BallOne.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B8318C1D881FCD00551BF7 /* BallOne.swift */; };
 		93B8318F1D881FD400551BF7 /* BallTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B8318E1D881FD400551BF7 /* BallTwo.swift */; };
@@ -45,6 +46,7 @@
 		93429E4A1D70505F00C77C05 /* goal-football.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "goal-football.png"; sourceTree = "<group>"; };
 		93429E4D1D705CE900C77C05 /* arrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arrow.png; sourceTree = "<group>"; };
 		93429E4F1D74618200C77C05 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
+		934EEB461D8B391000059DE0 /* Points.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Points.swift; sourceTree = "<group>"; };
 		93B8318A1D86941700551BF7 /* Level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Level.swift; sourceTree = "<group>"; };
 		93B8318C1D881FCD00551BF7 /* BallOne.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallOne.swift; sourceTree = "<group>"; };
 		93B8318E1D881FD400551BF7 /* BallTwo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BallTwo.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 				93B8318E1D881FD400551BF7 /* BallTwo.swift */,
 				93429E311D704FC000C77C05 /* AppDelegate.swift */,
 				93429E4F1D74618200C77C05 /* Functions.swift */,
+				934EEB461D8B391000059DE0 /* Points.swift */,
 				93B8318A1D86941700551BF7 /* Level.swift */,
 				93429E371D704FC000C77C05 /* GameViewController.swift */,
 				93429E391D704FC000C77C05 /* Main.storyboard */,
@@ -195,6 +198,7 @@
 				93429E381D704FC000C77C05 /* GameViewController.swift in Sources */,
 				93429E321D704FC000C77C05 /* AppDelegate.swift in Sources */,
 				93B8318F1D881FD400551BF7 /* BallTwo.swift in Sources */,
+				934EEB471D8B391000059DE0 /* Points.swift in Sources */,
 				93B8318B1D86941700551BF7 /* Level.swift in Sources */,
 				93429E501D74618200C77C05 /* Functions.swift in Sources */,
 				93B8318D1D881FCD00551BF7 /* BallOne.swift in Sources */,

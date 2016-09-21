@@ -15,18 +15,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         static let Ball2: UInt32    = 0b1
     }
     
-    
     let background = SKSpriteNode(imageNamed: "background-football")
-    //var ball = SKSpriteNode(imageNamed: "ball1")
-    //var ball2 = SKSpriteNode(imageNamed: "ball1")
     let goal = SKSpriteNode(imageNamed: "goal-football")
     let arrow = SKSpriteNode(imageNamed: "arrow")
     let powerBar = SKSpriteNode(imageNamed: "power_bar")
     let powerPin = SKSpriteNode(imageNamed: "power_pin")
     let replay = SKSpriteNode(imageNamed: "replay")
-    var points: Int = 0
+    var scoreLbl: SKLabelNode!
     var ballGone: Bool!
     var gameState: GameState?
+    var ballShot: Bool = false
+    var playableRect: CGRect? = nil
+    var currentPoints: Int
     
     var weaponPower: CGFloat = 1500
     let π = CGFloat(M_PI)
@@ -34,7 +34,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var ball = BallOne()
     let ball2 = BallTwo()
     
+    init(size: CGSize, point: Int) {
+        currentPoints = point
+        
+        super.init(size:size)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func didMoveToView(view: SKView) {
+        
         
         //Adding the background to the view and setting it to be all the way to the back
         background.position = CGPoint(x: size.width/2, y: size.height/2)
@@ -46,28 +57,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let mySize = background.size
         print("Size: \(mySize)")
         
-        //Setting the position of the football and adding it to the view
+        //Ball1
     
         ball.position = CGPoint(x: 100 , y: 0)
         ball.zPosition = 2
-    
         addChild(ball)
-        
-        ball.physicsBody?.velocity.dx = 0.4
-        ball.physicsBody?.velocity.dy = 0.4
+        ball.physicsBody!.velocity.dx = 1
+        ball.physicsBody!.velocity.dy = 1
         
         //Ball2
         
         ball2.position = CGPoint(x: size.width - 250, y: size.height - size.height + 450)
         ball2.zPosition = 2
-        
-        /*ball2.physicsBody?.categoryBitMask = physicsCategory.Ball2
-        ball2.physicsBody?.collisionBitMask = physicsCategory.Ball1
-        ball2.physicsBody?.contactTestBitMask = physicsCategory.Ball1
-        ball2.name = "Ball2"
-        ball2.physicsBody?.affectedByGravity = true
-        ball2.physicsBody?.dynamic = false*/
-        
         addChild(ball2)
         
         //Setting the position of the goal and adding it to the view
@@ -94,10 +95,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         arrow.position = ball.position
         
         //Replay-button
-        replay.position = CGPoint(x: size.width - size.width/size.width - 60, y: size.height - size.height/size.width - 60)
+        /*replay.position = CGPoint(x: size.width - size.width/size.width - 60, y: size.height - size.height/size.width - 60)
         replay.size = CGSize(width: 100, height: 100)
         replay.name = "restart"
-        addChild(replay)
+        addChild(replay)*/
+        
+        //Score Label
+        scoreLbl = SKLabelNode(fontNamed: "Chalkduster")
+        scoreLbl!.fontSize = 340
+        scoreLbl!.position = CGPoint(x: self.frame.width / 2, y: scene!.frame.height / 2 + 300)
+        scoreLbl!.fontColor = UIColor.blackColor()
+        scoreLbl!.text = "\(currentPoints)"
+        addChild(scoreLbl!)
+        
+        self.physicsBody!.restitution = 0.0
+        
+        //Rect
+        let maxAspectRatio:CGFloat = 16.0/9.0
+        let playableHeight = size.width / maxAspectRatio
+        let playableMargin = (size.height-playableHeight)/2.0
+        playableRect = CGRect(x: 0, y: playableMargin, width: size.width, height: playableHeight)
         
         //Tells if the ball we hit is gone
         ballGone = false
@@ -113,20 +130,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if collision == PhysicsCategory.Ball1 | PhysicsCategory.Ball2{
             ball2.physicsBody?.dynamic = true
-            points += 1
-            print("contact")
-            print(points)
+            currentPoints += 1
             ball2.removeFromParent()
             ballGone = true
+            scoreLbl!.text = "\(currentPoints)"
         }
         
         
     }
     
+    override func update(currentTime: NSTimeInterval) {
+        print(currentPoints)
+        if ball.physicsBody!.velocity.dx > 200 || ball.physicsBody!.velocity.dy > 200 {
+            ballShot = true
+        }
+        
+        if ballGone == false {
+            if ballShot == true {
+                if ball.physicsBody!.velocity.dx <= 40 && ball.physicsBody!.velocity.dx >= -40 && ball.physicsBody!.velocity.dy <= 40 && ball.physicsBody!.velocity.dy >= -40 {
+                    ball.physicsBody!.velocity.dx = 0.0
+                    ball.physicsBody!.velocity.dy = 0.0
+                
+                        if ball.physicsBody!.velocity.dx == 0.0 && ball.physicsBody!.velocity.dy == 0.0 {
+                            restart()
+                        }
+                }
+            
+            }
+        }
+        if ballGone == true{
+            restart()
+        }
+    }
+    
+    
     func restart(){
-        self.removeAllChildren()
-        self.removeAllActions()
-        let gameScene:GameScene = GameScene(size: background.size)
+        ball.position = CGPoint(x: 100 , y: 0)
+        ball2.removeFromParent()
+        let gameScene:GameScene = GameScene(size: background.size, point: currentPoints)
         let transition = SKTransition.fadeWithDuration(1.0)
         self.view!.presentScene(gameScene, transition: transition)
     }
@@ -153,16 +194,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-   /* func changeLevel(level: Int) {
-        if currentLevel+level < loadLevels()!.count {
-            let newScene = GameScene(level: <#T##Int#>)
-            newScene.scaleMode = scaleMode
-            
-            view!.presentScene(newScene)
-        }
-    }*/
-    
-    
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
        /* Called when a touch begins */
         
@@ -170,14 +201,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let positionOfTouch = touch.locationInNode(self)
             let touchedNode = self.nodeAtPoint(positionOfTouch)
             
-            /*ball.position = positionOfTouch
-            ball.physicsBody = SKPhysicsBody(circleOfRadius: 25)
-            ball.physicsBody?.affectedByGravity = true
-            ball.physicsBody?.restitution = 0.8
-            ball.physicsBody?.linearDamping = 0
-            self.addChild(ball)*/
-            
-
             //Setting the powerbar
             powerBar.position = CGPoint(x: size.width - size.width/2, y: size.height - size.height/3)
             powerBar.size = CGSize(width: 700, height: 100)
@@ -191,11 +214,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             addChild(powerPin)
             
                 touchStart(positionOfTouch)
-            
-            
-            if replay == touchedNode{
-                restart()
-            }
             
         }
         
@@ -234,12 +252,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             arrow.runAction(rotateAction)
             
         }
-        
-       /* if isTouching == true {
-            var timer = NSTimer.scheduledTimerWithTimeInterval(1.0, target: self, selector: Selector("powerControl"), userInfo: nil, repeats: true)
-            print(weaponPower)
-        }*/
-        
     
     }
     
@@ -251,9 +263,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //This function controlls so you can only touch the screen oncx
         self.userInteractionEnabled = false
         
-        if ball.physicsBody!.velocity.dx == 0.0 && ball.physicsBody!.velocity.dy == 0.0 {
-            restart()
-        }
         
         touchStopped(touchLocation)
     }
@@ -267,6 +276,74 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         powerPin.removeFromParent()
         
         ball.physicsBody?.velocity = startingVelocity
+    }
+    
+    
+    func endGame(won: Bool) {
+        ball.physicsBody?.dynamic = false
+        points+1
+        
+        if won {
+            let moveToGym = SKAction.moveTo(ball2.position, duration: 0.3)
+            let hideMain = SKAction.runBlock({self.ball.hidden = true})
+            let endMessage = SKAction.runBlock({self.endMessage(won)})
+            
+            ball.runAction(SKAction.sequence([moveToGym,hideMain, endMessage]))
+        } else {
+            endMessage(won)
+        }
         
     }
+    
+    func endMessage(won: Bool) {
+        let background = SKSpriteNode(imageNamed: "infobox")
+        background.size = CGSize(width: 3*playableRect!.width/4, height: 3*playableRect!.height/4)
+        background.zPosition = 99
+        
+        let endLabel1 = SKLabelNode(fontNamed: "AvenirNext-DemiBold")
+        let endLabel2 = SKLabelNode()
+        
+        endLabel1.fontSize = 150
+        endLabel2.fontSize = 100
+        
+        endLabel1.position = CGPoint(x: 0, y: 200)
+        endLabel2.position = CGPoint(x: 0, y: -400)
+        endLabel1.zPosition = 100
+        endLabel2.zPosition = 100
+        
+        let changeState: SKAction
+        
+        if won {
+            scoreLbl.text = "\(points)"
+            points+=1
+            background.position.y = CGRectGetMidY(playableRect!)-playableRect!.height-100
+            background.position.x = ball2.position.x
+            
+            changeState = SKAction.runBlock({ self.gameState = GameState.GameWon})
+                    } else {
+            endLabel1.text = "You lost!"
+            endLabel2.text = "Touch anywhere to try again"
+            background.position.x = ball.position.x
+            background.position.y = CGRectGetMidY(playableRect!)-playableRect!.height-100
+            
+            changeState = SKAction.runBlock({self.gameState = GameState.GameLost})
+            
+            background.addChild(endLabel1)
+            background.addChild(endLabel2)
+        }
+        
+        addChild(background)
+        
+        let moveToMid = SKAction.moveBy(CGVectorMake(0, playableRect!.height), duration: 2)
+
+        
+        background.runAction(SKAction.sequence([moveToMid, SKAction.waitForDuration(1), changeState]))
+    }
+    
+    func getDocumentsDirectory() -> URL{
+        
+    
+    }
+    
+    
 }

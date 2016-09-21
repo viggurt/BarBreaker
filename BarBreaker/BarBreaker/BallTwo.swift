@@ -26,7 +26,7 @@ class BallTwo: SKSpriteNode {
     
     func setup() {
         physicsBody = SKPhysicsBody(circleOfRadius: 100)
-        physicsBody!.dynamic = true
+        physicsBody!.dynamic = false
         physicsBody?.affectedByGravity = true
         physicsBody?.usesPreciseCollisionDetection = true
         physicsBody!.categoryBitMask = GameScene.PhysicsCategory.Ball2

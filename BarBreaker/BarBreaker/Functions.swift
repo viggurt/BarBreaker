@@ -9,6 +9,8 @@
 import Foundation
 import CoreGraphics
 
+var points: Int = 0
+
 
 func / (left: CGPoint, scalar: CGFloat) -> CGPoint {
     return CGPoint(x: left.x/scalar, y: left.y/scalar)

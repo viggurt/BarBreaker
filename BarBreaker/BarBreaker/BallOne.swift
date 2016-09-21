@@ -9,9 +9,11 @@
 import SpriteKit
 
 class BallOne: SKSpriteNode {
+    
+    var point: Int
  
     init(){
-        
+        point = 0
         let size = CGSize(width: 100, height: 100)
         let texture = SKTexture(imageNamed: "ball1")
         
